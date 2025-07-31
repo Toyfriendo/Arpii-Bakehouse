@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arpii Bakehouse – Cookies & Cakes</title>
+
+  <!-- ---------  CSS  --------- -->
+  <style>
+    /* ----------  THEME VARIABLES  ---------- */
+    :root {
+      --bg: #ff1ab3;           /* neon pink */
+      --fg: #000;              /* bold black text */
+      --accent: #ffffff;       /* buttons / links / search results / side-menu */
+      --accent-fg: #000;       /* accent text */
+    }
+
+    /* Dark‑mode override (added to <html> by JS) */
+    html.dark {
+      --bg: #121212;
+      --fg: #f5f5f5;
+      --accent: #ff1ab3;
+      --accent-fg: #000;
+    }
+
+    /* ----------  GLOBAL RESET  ---------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-weight: 700; /* global bold */
+      color: var(--fg);
+    }
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 1rem 2rem;
+      overflow-x: hidden; /* prevent page shift when menu opens */
+    }
+
+    /* ----------  NAV TOGGLE & SIDE MENU  ---------- */
+    .nav-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background: none;
+      border: 2px solid var(--fg);
+      border-radius: 8px;
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.6rem;
+      color: var(--fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1100;
+      transition: background 0.2s ease;
+    }
+    .nav-toggle:hover { background: rgba(0,0,0,0.05); }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100%;
+      background: var(--accent);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      padding: 4rem 1rem;
+      z-index: 1000;
+      box-shadow: 4px 0 8px rgba(0,0,0,0.25);
+    }
+    .side-menu.open { transform: translateX(0); }
+
+    .side-menu ul { list-style: none; }
+    .side-menu li { margin-bottom: 1.5rem; }
+    .side-menu a {
+      color: var(--accent-fg);
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+    .side-menu a:hover { text-decoration: underline; }
+
+    /* ----------  LAYOUT  ---------- */
+    header {
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin-bottom: 1.5rem;
+    }
+    p.tagline {
+      font-size: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ----------  SEARCH TOOL  ---------- */
+    .search-section {
+      margin-bottom: 3rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #searchInput {
+      padding: 0.7rem 1.2rem;
+      width: min(90vw, 400px);
+      border: 2px solid var(--fg);
+      border-radius: 50px;
+      font-size: 1rem;
+      background: transparent;
+      outline: none;
+      color: var(--fg);
+    }
+    #searchInput::placeholder { color: var(--fg); opacity: 0.6; }
+
+    .results {
+      list-style: none;
+      margin-top: 0.75rem;
+      max-height: 220px;
+      overflow-y: auto;
+      text-align: left;
+      width: min(90vw, 400px);
+      background: var(--accent);
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .results li {
+      padding: 0.55rem 1rem;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      color: var(--accent-fg);
+    }
+    .results li:hover { background: rgba(0,0,0,0.1); }
+
+    /* ----------  CALL‑TO‑ACTION  ---------- */
+    .cta-btn {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border: none;
+      padding: 0.9rem 2.2rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      margin-bottom: 3rem;
+    }
+    .cta-btn:hover { transform: scale(1.05); }
+
+    /* ----------  DARK‑MODE TOGGLE  ---------- */
+    .toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: 2px solid var(--fg);
+      border-radius: 50%;
+      width: 3rem;
+      height: 3rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      line-height: 0;
+      user-select: none;
+      transition: background 0.2s ease;
+      z-index: 1100;
+    }
+    .toggle:hover { background: rgba(0,0,0,0.05); }
+
+    /* ----------  FOOTER  ---------- */
+    footer {
+      margin-top: auto;
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation toggle button -->
+  <button id="navToggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+
+  <!-- Side Menu -->
+  <aside id="sideMenu" class="side-menu" aria-label="Main navigation">
+    <ul>
+      <li><a href="#menu" onclick="document.getElementById('navToggle').click()">Menu</a></li>
+      <li><a href="#contact" onclick="document.getElementById('navToggle').click()">Contact&nbsp;Us</a></li>
+      <li><a href="#orders" onclick="document.getElementById('navToggle').click()">Your&nbsp;Orders</a></li>
+      <li><a href="#refer" onclick="document.getElementById('navToggle').click()">Refer</a></li>
+      <li><a href="#account" onclick="document.getElementById('navToggle').click()">Your&nbsp;Account</a></li>
+    </ul>
+  </aside>
+
+  <!-- Dark‑mode toggle -->
+  <button id="modeToggle" class="toggle" aria-label="Toggle dark mode">🌓</button>
+
+  <!-- Hero / headline -->
+  <header>Arpii's&nbsp;Bake&nbsp;House</header>
+  <p class="tagline">Freshly baked cookies &amp; decadent cakes, delivered to your door.</p>
+
+  <!-- Search Tool -->
+  <section class="search-section">
+    <input id="searchInput" type="search" placeholder="Search our treats…" autocomplete="off" />
+    <ul id="results" class="results" hidden></ul>
+  </section>
+
+  <!-- Call to Action -->
+  <button class="cta-btn" onclick="location.href='#order'">Shop&nbsp;Now</button>
+
+  <!-- Placeholder section (extend as needed) -->
+  <section id="order" style="margin-top:5rem;">
+    <p style="font-size:1rem;">Online store coming soon&nbsp;— sign up for launch updates!</p>
+    <!-- You can drop an embedded form or product cards here -->
+  </section>
+
+  <footer>&copy; <span id="year"></span> Sweet Bite Bakery. All rights reserved.</footer>
+
+  <!-- ---------  JS  --------- -->
+  <script>
+    /* Insert current year in footer */
+    document.getElementById("year").textContent = new Date().getFull
